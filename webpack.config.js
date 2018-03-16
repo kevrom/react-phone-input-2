@@ -110,7 +110,7 @@ if (TARGET === 'build') {
           warnings: false
         }
       }),
-      new BundleAnalyzerPlugin()
+      // new BundleAnalyzerPlugin()
     ]
   });
 }
