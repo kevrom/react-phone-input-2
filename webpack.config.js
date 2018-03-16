@@ -76,15 +76,6 @@ if (TARGET === 'build') {
       library: 'ReactPhoneInput',
       libraryTarget: 'umd'
     },
-    externals: [{
-      'lodash': 'lodash',
-      'react': {
-        root: 'React',
-        commonjs2: 'react',
-        commonjs: 'react',
-        amd: 'react'
-      }
-    }],
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
