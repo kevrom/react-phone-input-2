@@ -4,3 +4,4 @@ package-lock.json
 animation.gif
 dist
 .DS_Store
+*.log

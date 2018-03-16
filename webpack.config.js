@@ -5,13 +5,13 @@ const merge = require('webpack-merge');
 const TARGET = process.env.TARGET;
 const ROOT_PATH = path.resolve(__dirname);
 const nodeModulesDir = path.join(ROOT_PATH, 'node_modules');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 //Common configuration settings
 const common = {
   entry: path.resolve(ROOT_PATH, 'src/index.js'),
   resolve: {
-    extensions: ['', '.js', '.jsx'],
-    modulesDirectories: ['node_modules']
+    extensions: ['.js', '.jsx']
   },
   output: {
     path: path.resolve(ROOT_PATH, 'dist'),
@@ -21,17 +21,17 @@ const common = {
     loaders: [
       {
         test: /\.(js|jsx)$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         include: path.resolve(ROOT_PATH, 'src')
       },
       {
         test: /\.png.*$/,
-        loaders: ['url-loader?limit=100000&mimetype=image/png'],
+        loaders: ['url-loader?limit=1000&mimetype=image/png'],
         exclude: /node_modules/
       },
       {
         test: /\.less$/,
-        loader: 'style!css!less'
+        loader: 'style-loader!css-loader!less-loader'
       }
     ]
   }
@@ -74,8 +74,30 @@ if (TARGET === 'build') {
       path: path.resolve(ROOT_PATH, 'dist'),
       filename: 'index.js',
       library: 'ReactPhoneInput',
-      libraryTarget: 'umd'
+      libraryTarget: 'commonjs'
     },
+    externals: [
+      {
+        'lodash': {
+          root: 'Lodash',
+          commonjs2: 'lodash',
+          commonjs: 'lodash',
+          amd: 'lodash'
+        },
+        'react': {
+          root: 'React',
+          commonjs2: 'react',
+          commonjs: 'react',
+          amd: 'react'
+        },
+        'react-dom': {
+          root: 'ReactDOM',
+          commonjs2: 'react-dom',
+          commonjs: 'react-dom',
+          amd: 'react-dom'
+        }
+      }
+    ],
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
@@ -88,7 +110,7 @@ if (TARGET === 'build') {
           warnings: false
         }
       }),
-      new webpack.optimize.DedupePlugin()
+      new BundleAnalyzerPlugin()
     ]
   });
 }
