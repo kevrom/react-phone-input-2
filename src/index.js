@@ -1,12 +1,12 @@
 // TODO - fix the onlyContries props. Currently expects that as an array of country object, but users should be able to send in array of country isos
 
-import { some, find, reduce, map, filter, includes } from 'lodash/collection';
-import { findIndex, head, tail } from 'lodash/array';
-import { debounce, memoize } from 'lodash/function';
-import { trim, startsWith } from 'lodash/string';
+import { some, find, reduce, map, filter, includes } from 'lodash';
+import { findIndex, head, tail } from 'lodash';
+import { debounce, memoize } from 'lodash';
+import { trim, startsWith } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import countryData from './country_data.js';
+import countryData from './country_data';
 import classNames from 'classnames';
 
 import './react-phone-input-style.less';
@@ -92,6 +92,7 @@ class ReactPhoneInput extends React.Component {
       this.getOnlyCountries(props.onlyCountries, filteredCountries), props.excludeCountries);
 
     const preferredCountries = filter(countryData.allCountries, (country) => {
+      if (props.disableAreaCodes && country.isAreaCode) return false;
       return some(props.preferredCountries, (preferredCountry) => {
         return preferredCountry === country.iso2;
       });
@@ -441,29 +442,14 @@ class ReactPhoneInput extends React.Component {
     }
 
     let caretPosition = e.target.selectionStart;
-    const oldFormattedText = this.state.formattedNumber;
-    const diff = formattedNumber.length - oldFormattedText.length;
 
     this.setState({
-      formattedNumber: formattedNumber,
-      freezeSelection: freezeSelection,
+      caretPosition,
+      formattedNumber,
+      freezeSelection,
       selectedCountry: newSelectedCountry.dialCode
         ? newSelectedCountry
         : this.state.selectedCountry
-    }, () => {
-      if (this.props.isModernBrowser) {
-        if (diff > 0) {
-          caretPosition = caretPosition - diff;
-        }
-
-        if (caretPosition > 0 && oldFormattedText.length >= formattedNumber.length) {
-          this.numberInputRef.setSelectionRange(caretPosition, caretPosition);
-        }
-      }
-
-      if (this.props.onChange) {
-        this.props.onChange(this.state.formattedNumber, this.getCountryData());
-      }
     });
   }
 
@@ -643,6 +629,29 @@ class ReactPhoneInput extends React.Component {
         {countryDropdownList}
       </ul>
     );
+  }
+
+  componentDidUpdate(_, prevState) {
+    const { caretPosition, formattedNumber } = this.state;
+    if (prevState.formattedNumber !== formattedNumber) {
+      const oldFormattedText = prevState.formattedNumber;
+      const diff = formattedNumber.length - oldFormattedText.length;
+
+      if (this.props.isModernBrowser) {
+        let newCaretPosition;
+        if (diff > 0) {
+          newCaretPosition = this.state.caretPosition - diff;
+        }
+
+        if (newCaretPosition > 0 && oldFormattedText.length >= formattedNumber.length) {
+          this.numberInputRef.setSelectionRange(newCaretPosition, newCaretPosition);
+        }
+      }
+
+      if (this.props.onChange) {
+        this.props.onChange(formattedNumber, this.getCountryData());
+      }
+    }
   }
 
   render() {
