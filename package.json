@@ -1,14 +1,13 @@
 {
   "name": "react-phone-input-2",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A react component to format phone numbers",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "TARGET=dev webpack-dev-server --progress",
     "build": "rimraf dist && TARGET=build webpack -p --progress",
-    "analyze": "rimraf dist && TARGET=analyze webpack -p --progress",
-    "postinstall": "postinstall-build dist"
+    "analyze": "rimraf dist && TARGET=analyze webpack -p --progress"
   },
   "repository": {
     "type": "git",
@@ -53,7 +52,6 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "postinstall-build": "^5.0.1",
     "prop-types": "^15.6.1"
   }
 }
