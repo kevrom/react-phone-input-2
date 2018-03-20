@@ -8,7 +8,7 @@
     "dev": "TARGET=dev webpack-dev-server --progress",
     "build": "rimraf dist && TARGET=build webpack -p --progress",
     "analyze": "rimraf dist && TARGET=analyze webpack -p --progress",
-    "postinstall": "yarn build"
+    "postinstall": "postinstall-build dist"
   },
   "repository": {
     "type": "git",
@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "postinstall-build": "^5.0.1",
     "prop-types": "^15.6.1"
   }
 }
